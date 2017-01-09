@@ -3,3 +3,4 @@ djangorestframework==3.5.3
 markdown
 django-filter
 pygments
+httpie
