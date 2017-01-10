@@ -14,6 +14,14 @@ from .permissions import IsOwnerOrReadOnly
 # from rest_framework import status
 
 
+@api_view(['GET'])
+def api_root(request, format=None):
+	return Response({
+		'users': reverse('snippets:user-list', request=request, format=format),
+		'snippets': reverse('snippets:snippet-list', request=request, format=format)
+	})
+
+
 # list(get), create(post)
 class SnippetList(generics.ListCreateAPIView):
 	queryset = Snippet.objects.all()
@@ -32,16 +40,6 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly, )
 
 
-class UserList(generics.ListAPIView):
-	queryset = User.objects.all()
-	serializer_class = UserSerializer
-
-
-class UserDetail(generics.RetrieveAPIView):
-	queryset = User.objects.all()
-	serializer_class = UserSerializer
-
-
 class SnippetHighlight(generics.GenericAPIView):
 	queryset = Snippet.objects.all()
 	renderer_classes = (renderers.StaticHTMLRenderer,)
@@ -51,12 +49,14 @@ class SnippetHighlight(generics.GenericAPIView):
 		return Response(snippet.highlighted)
 
 
-@api_view(['GET'])
-def api_root(request, format=None):
-	return Response({
-		'users': reverse('snippets:user-list', request=request, format=format),
-		'snippets': reverse('snippets:snippet-list', request=request, format=format)
-	})
+class UserList(generics.ListAPIView):
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
 
 
 # class SnippetList(mixins.ListModelMixin,  # list (get)
